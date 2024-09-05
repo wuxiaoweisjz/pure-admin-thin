@@ -9,7 +9,7 @@ import { defineFakeRoute } from "vite-plugin-fake-server/client";
 const permissionRouter = {
   path: "/permission",
   meta: {
-    title: "权限管理",
+    title: "menus.purePermission",
     icon: "ep:lollipop",
     rank: 10
   },
@@ -18,14 +18,14 @@ const permissionRouter = {
       path: "/permission/page/index",
       name: "PermissionPage",
       meta: {
-        title: "页面权限",
+        title: "menus.purePermissionPage",
         roles: ["admin", "common"]
       }
     },
     {
       path: "/permission/button",
       meta: {
-        title: "按钮权限",
+        title: "menus.purePermissionButton",
         roles: ["admin", "common"]
       },
       children: [
@@ -34,7 +34,7 @@ const permissionRouter = {
           component: "permission/button/index",
           name: "PermissionButtonRouter",
           meta: {
-            title: "路由返回按钮权限",
+            title: "menus.purePermissionButtonRouter",
             auths: [
               "permission:btn:add",
               "permission:btn:edit",
@@ -47,7 +47,7 @@ const permissionRouter = {
           component: "permission/button/perms",
           name: "PermissionButtonLogin",
           meta: {
-            title: "登录接口返回按钮权限"
+            title: "menus.purePermissionButtonLogin"
           }
         }
       ]
