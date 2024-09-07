@@ -9,7 +9,7 @@ import type { FormInstance } from "element-plus";
 import { $t, transformI18n } from "@/plugins/i18n";
 import { useLayout } from "@/layout/hooks/useLayout";
 import { useUserStoreHook } from "@/store/modules/user";
-import { initRouter, getTopMenu } from "@/router/utils";
+import { initRouter, getTopMenu, addPathMatch } from "@/router/utils";
 import { bg, avatar, illustration } from "./utils/static";
 import { useRenderIcon } from "@/components/ReIcon/src/hooks";
 import { ref, reactive, toRaw, onMounted, onBeforeUnmount } from "vue";
@@ -22,6 +22,7 @@ import globalization from "@/assets/svg/globalization.svg?component";
 import Lock from "@iconify-icons/ri/lock-fill";
 import Check from "@iconify-icons/ep/check";
 import User from "@iconify-icons/ri/user-3-fill";
+import { usePermissionStoreHook } from "@/store/modules/permission";
 
 defineOptions({
   name: "Login"
@@ -51,19 +52,13 @@ const onLogin = async (formEl: FormInstance | undefined) => {
       loading.value = true;
       useUserStoreHook()
         .loginByUsername({ username: ruleForm.username, password: "admin123" })
-        .then(res => {
-          if (res.success) {
-            // 获取后端路由
-            return initRouter().then(() => {
-              router.push(getTopMenu(true).path).then(() => {
-                message(t("login.pureLoginSuccess"), { type: "success" });
-              });
-            });
-          } else {
-            message(t("login.pureLoginFail"), { type: "error" });
-          }
-        })
         .finally(() => (loading.value = false));
+      // 全部采取静态路由模式
+      usePermissionStoreHook().handleWholeMenus([]);
+      addPathMatch();
+      router.push(getTopMenu(true).path);
+      message("登录成功", { type: "success" });
+      loading.value = false;
     }
   });
 };

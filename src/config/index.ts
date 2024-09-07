@@ -1,8 +1,6 @@
-import axios from "axios";
 import type { App } from "vue";
 
 let config: object = {};
-const { VITE_PUBLIC_PATH } = import.meta.env;
 
 const setConfig = (cfg?: unknown) => {
   config = Object.assign(config, cfg);
@@ -27,7 +25,7 @@ const getConfig = (key?: string): PlatformConfigs => {
 };
 
 /** 获取项目动态全局配置 */
-export const getPlatformConfig = async (app: App): Promise<undefined> => {
+/*export const getPlatformConfig = async (app: App): Promise<undefined> => {
   app.config.globalProperties.$config = getConfig();
   return axios({
     method: "get",
@@ -47,6 +45,49 @@ export const getPlatformConfig = async (app: App): Promise<undefined> => {
     .catch(() => {
       throw "请在public文件夹下添加platform-config.json配置文件";
     });
+};*/
+
+export const getPlatformConfig = async (app: App): Promise<PlatformConfigs> => {
+  // 将 platform-config.json 中的内容直接作为配置对象
+  const config = {
+    Version: "5.8.0",
+    Title: "PureAdmin",
+    FixedHeader: true,
+    HiddenSideBar: false,
+    MultiTagsCache: false,
+    KeepAlive: true,
+    Locale: "zh",
+    Layout: "vertical",
+    Theme: "light",
+    DarkMode: false,
+    OverallStyle: "light",
+    Grey: false,
+    Weak: false,
+    HideTabs: false,
+    HideFooter: false,
+    Stretch: false,
+    SidebarStatus: true,
+    EpThemeColor: "#409EFF",
+    ShowLogo: true,
+    ShowModel: "smart",
+    MenuArrowIconNoTransition: false,
+    CachingAsyncRoutes: false,
+    TooltipEffect: "light",
+    ResponsiveStorageNameSpace: "responsive-",
+    MenuSearchHistory: 6
+  };
+
+  // 设置全局配置
+  let $config = (app.config.globalProperties.$config = getConfig());
+
+  // 自动注入系统配置
+  if (app && $config && typeof config === "object") {
+    $config = Object.assign($config, config);
+    app.config.globalProperties.$config = $config;
+    setConfig($config);
+  }
+
+  return $config;
 };
 
 /** 本地响应式存储的命名空间 */
